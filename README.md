@@ -49,10 +49,13 @@ text  ────────────────────────�
 Whisper-tiny q8 is the smallest variant that runs reliably in the browser; total speech download is 45.2 MB. **Total first-load download ≈ 209 MB**, once; afterwards no network is needed. No model was trained or fine-tuned.
 
 ## Data
-- **Prototype examples are synthetic**, hand-written: 4 per language × 3 languages = 12 per category (`taxonomy.ts`).
-- No public dataset was used. **Real farm-visit messages are not represented.**
+- **Prototype examples**: hand-written synthetic ones (4 per language × 3 languages per category) plus 25 aligned human-written requests × EN/FR/DE from **Amazon MASSIVE 1.1** (CC BY 4.0) for transport, meals and "other" (`massive-examples.ts`, regenerate with `scripts/import-massive.py`).
+- Visitor languages: EN, FR, DE.
+- **Test bench**: `bun scripts/bench.ts --out=bench/RESULTS.md` runs the real model on 21 held-out sentences aligned across EN/FR/DE (FLORES-style) and suggests per-language thresholds. Results: `bench/`.
+- **Several requests in one message**: `requests.ts` splits on punctuation and EN/FR/DE connectors ("and how…", "puis", "außerdem"), classifies each part, and saves one record per distinct confident category (max 3, same session). If no part is confident, the whole message is used.
+- **Request details**: fixed word rules (modelled on MASSIVE slot types) tag morning/afternoon/evening/weekend/children/group/vegetarian; only the tag is stored. **Real farm-visit messages are not represented.**
 - Not covered: slang, mixed-language messages, low-resource languages, noisy audio. Accuracy may drop outside EN/FR/DE.
-- Calibration (demo set, on-device): EN/FR/DE harvest sentences → Harvest walk with scores 0.93–0.95 and margins 0.018–0.026; an unrelated message → Other; the fixed ambiguous message "Can I pay by card for the coffee tasting and the taxi?" → Not sure (coffee tasting 0.846 vs transport 0.843, margin below 0.012). Defaults: `minScore 0.84`, `minMargin 0.012`. This is a tiny set — recalibrate with real data.
+- Calibration (demo set, on-device): EN/FR/DE harvest sentences → Harvest walk with scores 0.93–0.95 and margins 0.018–0.026; an unrelated message → Other; the fixed ambiguous message "Do you accept cards for the tasting and the roasting?" → Not sure (meals 0.858 vs roasting 0.853, margin below 0.012). Defaults: `minScore 0.84`, `minMargin 0.012`. This is a tiny set — recalibrate with real data.
 - The app says **"Not sure"** rather than guessing.
 
 ## Privacy

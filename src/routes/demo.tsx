@@ -1,3 +1,4 @@
+import type { VisitorLang } from "@/lib/taxonomy";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { RotateCcw, Zap, HelpCircle, Sprout } from "lucide-react";
@@ -19,7 +20,7 @@ function Demo() {
   const [log, setLog] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
-  const run = async (msgs: { lang: "en" | "fr" | "de"; text: string }[]) => {
+  const run = async (msgs: { lang: VisitorLang; text: string }[]) => {
     setBusy(true);
     for (const m of msgs) {
       const { result } = await submitFeedback(m.text, m.lang, crypto.randomUUID(), "text");

@@ -1,5 +1,6 @@
 // Fixed, predefined translations only. No AI-generated text.
 import type { Category, VisitorLang } from "./taxonomy";
+import type { Detail } from "./details";
 
 export type NoorLang = "sq" | "en";
 
@@ -45,6 +46,12 @@ export const INSIGHT: Record<NoorLang, Record<Category, (n: number) => string>> 
     other: (n) => `${n} separate visitor submissions left other messages.`,
   },
 };
+
+export const DETAIL_NAME: Record<NoorLang, Record<Detail, string>> = {
+  sq: { morning: "mëngjes", afternoon: "pasdite", evening: "mbrëmje", weekend: "fundjavë", children: "me fëmijë", group: "grup", vegetarian: "vegjetarian" },
+  en: { morning: "morning", afternoon: "afternoon", evening: "evening", weekend: "weekend", children: "with children", group: "group", vegetarian: "vegetarian" },
+};
+export const DETAILS_LABEL: Record<NoorLang, string> = { sq: "Përmendur", en: "Mentioned" };
 
 export const LANG_NAME: Record<NoorLang, Record<VisitorLang, string>> = {
   sq: { en: "anglisht", fr: "frëngjisht", de: "gjermanisht" },

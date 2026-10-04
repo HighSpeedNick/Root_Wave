@@ -1,3 +1,4 @@
+import type { VisitorLang } from "@/lib/taxonomy";
 // Voice input adapter: MediaRecorder capture → 16 kHz mono PCM → local Whisper.
 // Audio never leaves the device and is discarded right after transcription.
 import { transcribe } from "./ai";
@@ -45,6 +46,6 @@ async function toPcm16k(blob: Blob): Promise<Float32Array> {
   return rendered.getChannelData(0).slice();
 }
 
-export async function speechToText(audio: Float32Array, lang: "en" | "fr" | "de") {
+export async function speechToText(audio: Float32Array, lang: VisitorLang) {
   return transcribe(audio, lang); // buffer is transferred and dropped after use
 }

@@ -1,3 +1,5 @@
+import { MASSIVE_EXAMPLES } from "./massive-examples";
+
 // Fixed tourism taxonomy and SYNTHETIC prototype examples.
 // These examples were written by hand for the prototype. They are NOT real
 // visitor messages and do not cover slang, mixed-language or other languages.
@@ -14,6 +16,7 @@ export const CATEGORIES = [
 
 export type Category = (typeof CATEGORIES)[number];
 export type VisitorLang = "en" | "fr" | "de";
+export const VISITOR_LANGS: VisitorLang[] = ["en", "fr", "de"];
 
 export const CATEGORY_ICON: Record<Category, string> = {
   harvest_walk: "🌿",
@@ -168,11 +171,16 @@ export const PROTOTYPES: Record<Category, Record<VisitorLang, string[]>> = {
   },
 };
 
-export function prototypeList(): { category: Category; lang: VisitorLang; text: string }[] {
-  const out: { category: Category; lang: VisitorLang; text: string }[] = [];
+export interface Prototype { category: Category; lang: string; text: string; source: "synthetic" | "massive" }
+
+export function prototypeList(): Prototype[] {
+  const out: Prototype[] = [];
   for (const c of CATEGORIES)
-    for (const l of ["en", "fr", "de"] as VisitorLang[])
-      for (const t of PROTOTYPES[c][l]) out.push({ category: c, lang: l, text: t });
+    for (const l of Object.keys(PROTOTYPES[c]) as VisitorLang[])
+      for (const t of PROTOTYPES[c][l]) out.push({ category: c, lang: l, text: t, source: "synthetic" });
+  // Human-written MASSIVE utterances (CC BY 4.0) for categories they clearly match.
+  for (const m of MASSIVE_EXAMPLES)
+    for (const l of VISITOR_LANGS) { const t = m.text[l]; if (t) out.push({ category: m.category, lang: l, text: t, source: "massive" }); }
   return out;
 }
 
@@ -183,8 +191,8 @@ export const DEMO_MESSAGES: { lang: VisitorLang; text: string }[] = [
 ];
 
 /** Deterministic ambiguous message: with the default thresholds the real model
- *  scores coffee tasting 0.846 vs transport 0.843 (margin < 0.012) → "Not sure". */
+ *  scores meals 0.858 vs roasting 0.853 (margin < 0.012) → "Not sure". */
 export const AMBIGUOUS_DEMO: { lang: VisitorLang; text: string } = {
   lang: "en",
-  text: "Can I pay by card for the coffee tasting and the taxi?",
+  text: "Do you accept cards for the tasting and the roasting?",
 };

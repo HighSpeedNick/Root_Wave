@@ -6,7 +6,7 @@ import { meta } from "@/lib/meta";
 import { useAppData } from "@/lib/hooks";
 import { categoryStats } from "@/lib/opportunity";
 import { CATEGORIES, CATEGORY_ICON, type Category } from "@/lib/taxonomy";
-import { INSIGHT, LANG_NAME, T, type NoorLang } from "@/lib/i18n";
+import { DETAIL_NAME, DETAILS_LABEL, INSIGHT, LANG_NAME, T, type NoorLang } from "@/lib/i18n";
 import { dismiss, saveSettings } from "@/lib/db";
 import { catName } from "@/lib/catname";
 
@@ -49,6 +49,7 @@ function Opportunity() {
           <dt>{L === "sq" ? "Mendime" : "Submissions"}</dt><dd className="font-bold tabular-nums">{s.count}</dd>
           <dt>{t.avgSim}</dt><dd className="font-bold tabular-nums">{s.avgScore.toFixed(3)}</dd>
           <dt>{t.languages}</dt><dd className="text-right font-bold">{s.languages.map((l) => LANG_NAME[L][l]).join(", ") || "—"}</dd>
+          <dt>{DETAILS_LABEL[L]}</dt><dd className="text-right font-bold">{s.details.map((d) => `${DETAIL_NAME[L][d.detail]} (${d.count})`).join(", ") || "—"}</dd>
         </dl>
       </section>
 

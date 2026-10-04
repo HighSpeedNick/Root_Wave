@@ -1,3 +1,4 @@
+import type { VisitorLang } from "@/lib/taxonomy";
 // Browser-only client for the on-device AI worker. Call only from effects/handlers.
 import { classifyVector, e5, type ClassificationResult, type ProtoVec, type Thresholds } from "./classifier";
 import { prototypeList } from "./taxonomy";
@@ -93,6 +94,6 @@ export async function classifyText(text: string, t: Thresholds): Promise<Classif
   return classifyVector(vec!, p, t);
 }
 
-export async function transcribe(audio: Float32Array, lang: "en" | "fr" | "de"): Promise<string> {
+export async function transcribe(audio: Float32Array, lang: VisitorLang): Promise<string> {
   return call<string>("transcribe", { audio, lang }, [audio.buffer]);
 }

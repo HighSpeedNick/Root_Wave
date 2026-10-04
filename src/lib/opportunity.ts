@@ -1,5 +1,6 @@
 import { CATEGORIES, type Category, type VisitorLang } from "./taxonomy";
 import type { Label } from "./classifier";
+import { topDetails, type Detail } from "./details";
 
 export interface FeedbackRecord {
   id: string;
@@ -11,6 +12,8 @@ export interface FeedbackRecord {
   language: VisitorLang;
   inputMode: "text" | "voice";
   ts: number;
+  /** Anonymous detail tags only (e.g. "morning"); never the words themselves. */
+  details?: Detail[];
 }
 
 export const OPPORTUNITY_MIN = 3;
@@ -23,6 +26,8 @@ export interface CategoryStat {
   avgScore: number;
   languages: VisitorLang[];
   lastTs: number;
+  /** Detail tags, counted once per session, most frequent first. */
+  details: { detail: Detail; count: number }[];
 }
 
 /** Counts distinct anonymous sessions per category in the season window. */
@@ -40,6 +45,7 @@ export function categoryStats(records: FeedbackRecord[], now: number, windowDays
       avgScore: uniq.length ? uniq.reduce((s, r) => s + r.score, 0) / uniq.length : 0,
       languages: [...new Set(uniq.map((r) => r.language))],
       lastTs: uniq.reduce((m, r) => Math.max(m, r.ts), 0),
+      details: topDetails(recs),
     };
   }
   return out;
