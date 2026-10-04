@@ -3,7 +3,7 @@ import { addFeedback, getSettings } from "./db";
 import type { FeedbackRecord } from "./opportunity";
 import type { VisitorLang } from "./taxonomy";
 import { extractDetails } from "./details";
-import { combineRequests, splitRequests } from "./requests";
+import { applyExplicitRequestRule, combineRequests, splitRequests } from "./requests";
 
 /** Classify locally and store only minimal records (no raw text, no identity).
  *  A message with several requests becomes one record per distinct category,
@@ -12,7 +12,9 @@ export async function submitFeedback(text: string, language: VisitorLang, sessio
   const s = await getSettings();
   const whole = await classifyText(text, s);
   const parts = splitRequests(text);
-  const partResults = parts.length > 1 ? await Promise.all(parts.map((p) => classifyText(p, s))) : [whole];
+  const partResults = parts.length > 1
+    ? await Promise.all(parts.map(async (p) => applyExplicitRequestRule(p, await classifyText(p, s))))
+    : [applyExplicitRequestRule(text, whole)];
   const { results } = combineRequests(partResults, whole);
   const ts = Date.now();
   const recs: FeedbackRecord[] = results.map((r) => {

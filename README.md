@@ -5,6 +5,15 @@ Offline-first Small AI prototype — World Bank × Hack-Nation "Small AI for Dev
 ## Problem & user
 Noor runs a small coffee farm that receives a few foreign visitors. Language barriers and weak connectivity mean she never learns what visitors actually wanted. HarvestSignal lets visitors leave short feedback (voice or text, EN/FR/DE); the phone sorts it locally into fixed tourism categories and tells Noor — in her local language (prototype localization: **Albanian**) — when at least 3 separate anonymous visitor submissions ask for the same thing within the season window. A session ID prevents repeat submissions within one session from inflating the count; it does not identify or verify a real person. **The AI only informs; Noor decides.** Nothing is published, sent or booked automatically.
 
+## Problem evidence
+- About **2.6 billion people** were still offline worldwide in 2024 (ITU, *Facts and Figures 2024*, global).
+- Internet use is **83% in urban areas but 48% in rural areas** (ITU, *Facts and Figures 2024*, global) — farms are on the weak side of that gap.
+- International tourism reached about **1.4 billion arrivals in 2024** (UN Tourism, *World Tourism Barometer*, Jan 2025, global) — many of these visitors don't speak the host's language.
+
+**Why Albanian:** it is our team's language, so we can check the translations ourselves as proof of real localization; the pipeline works with any language file.
+
+**Device:** runs on a shared tablet or smartphone kept at the farm (by the guide or cooperative), not on Noor's basic phone.
+
 ## Input and output
 - **Voice is input only.** It is turned into text on the device (local Whisper-tiny), then follows exactly the same path as typed text.
 - **Noor receives text only** (Albanian or English, fixed translations).
@@ -43,10 +52,10 @@ text  ────────────────────────�
 |---|---|---|---|---|
 | Xenova/multilingual-e5-small | ONNX `model_quantized.onnx` (q8) + tokenizer | text classification | 135.4 MB (118.3 model + 17.1 tokenizer) | MIT (from intfloat/multilingual-e5-small model card; the Xenova ONNX conversion has no separate license tag) |
 | Xenova/whisper-tiny | ONNX q8 encoder + q8 merged decoder + tokenizer/config | offline speech-to-text | 45.2 MB (10.1 encoder + 30.7 decoder + 4.4 tokenizer/config) | Apache-2.0 (Hugging Face model card) |
-| onnxruntime-web | 1.31.0-dev, `ort-wasm-simd-threaded.jsep.wasm` | inference engine | 28.4 MB | MIT (npm package) |
+| onnxruntime-web | 1.31.0-dev.20260914-8d85527a0 (pinned exactly — it is the version required by @huggingface/transformers 4.3.0; latest stable 1.30.0 is not compatible with it), `ort-wasm-simd-threaded.jsep.wasm` | inference engine | 28.4 MB | MIT (npm package) |
 | @huggingface/transformers | 4.3.0 (bundled in app code) | pipelines | in app bundle | Apache-2.0 (npm package) |
 
-Whisper-tiny q8 is the smallest variant that runs reliably in the browser; total speech download is 45.2 MB. **Total first-load download ≈ 209 MB**, once; afterwards no network is needed. No model was trained or fine-tuned.
+Whisper-tiny q8 is the smallest variant that runs reliably in the browser; total speech download is 45.2 MB. **Total first-load download ≈ 209 MB**, once; afterwards no network is needed. It is downloaded once by the guide or cooperative on Wi-Fi (and can be side-loaded); text-only mode needs just the 135 MB text model. No model was trained or fine-tuned.
 
 ## Data
 - **Prototype examples**: hand-written synthetic ones (4 per language × 3 languages per category) plus 25 aligned human-written requests × EN/FR/DE from **Amazon MASSIVE 1.1** (CC BY 4.0) for transport, meals and "other" (`massive-examples.ts`, regenerate with `scripts/import-massive.py`).
@@ -56,6 +65,7 @@ Whisper-tiny q8 is the smallest variant that runs reliably in the browser; total
 - **Request details**: fixed word rules (modelled on MASSIVE slot types) tag morning/afternoon/evening/weekend/children/group/vegetarian; only the tag is stored. **Real farm-visit messages are not represented.**
 - Not covered: slang, mixed-language messages, low-resource languages, noisy audio. Accuracy may drop outside EN/FR/DE.
 - Calibration (demo set, on-device): EN/FR/DE harvest sentences → Harvest walk with scores 0.93–0.95 and margins 0.018–0.026; an unrelated message → Other; the fixed ambiguous message "Do you accept cards for the tasting and the roasting?" → Not sure (meals 0.858 vs roasting 0.853, margin below 0.012). Defaults: `minScore 0.84`, `minMargin 0.012`. This is a tiny set — recalibrate with real data.
+- **Separate test set** (`src/lib/test-set.ts`, 45 held-out messages, 15 each EN/FR/DE incl. 3 off-topic per language, never used for tuning; `bun scripts/bench.ts --set=test`): with current defaults **73% correct, 4% wrong, 22% "Not sure"**; when the app does answer it is right **94%** of the time. Per language: EN 80/7/13, FR 60/0/40, DE 80/7/13 (correct/wrong/not-sure %). Main confusion: price questions vs tasting. Full table: `bench/TEST-RESULTS.md`.
 - The app says **"Not sure"** rather than guessing.
 
 ## Privacy

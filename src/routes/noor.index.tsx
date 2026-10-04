@@ -9,7 +9,7 @@ import { INSIGHT, T, type NoorLang } from "@/lib/i18n";
 import { catName } from "@/lib/catname";
 
 export const Route = createFileRoute("/noor/")({
-  head: () => meta("Noor's dashboard — HarvestSignal", "Season counts of visitor feedback and new opportunities, computed on this device."),
+  head: () => meta("Noor's dashboard — Rootwave", "Season counts of visitor feedback and new opportunities, computed on this device."),
   component: Noor,
 });
 

@@ -9,7 +9,7 @@ import { swVersion, isPublishedHost, PUBLISHED_URL } from "@/lib/sw-register";
 import { DEFAULT_THRESHOLDS } from "@/lib/classifier";
 
 export const Route = createFileRoute("/settings")({
-  head: () => meta("Settings & privacy — HarvestSignal", "Privacy, data deletion, thresholds and proof that the AI runs offline on this device."),
+  head: () => meta("Settings & privacy — Rootwave", "Privacy, data deletion, thresholds and proof that the AI runs offline on this device."),
   component: SettingsPage,
 });
 

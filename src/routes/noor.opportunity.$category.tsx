@@ -14,7 +14,7 @@ export const Route = createFileRoute("/noor/opportunity/$category")({
   beforeLoad: ({ params }) => {
     if (!CATEGORIES.includes(params.category as Category) || params.category === "other") throw notFound();
   },
-  head: () => meta("Opportunity — HarvestSignal", "Evidence behind a recurring visitor request: submissions, similarity and languages."),
+  head: () => meta("Opportunity — Rootwave", "Evidence behind a recurring visitor request: submissions, similarity and languages."),
   component: Opportunity,
 });
 

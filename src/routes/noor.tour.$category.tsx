@@ -11,7 +11,7 @@ export const Route = createFileRoute("/noor/tour/$category")({
   beforeLoad: ({ params }) => {
     if (!CATEGORIES.includes(params.category as Category) || params.category === "other") throw notFound();
   },
-  head: () => meta("Tour draft — HarvestSignal", "A fixed, editable tour template. Nothing is published automatically."),
+  head: () => meta("Tour draft — Rootwave", "A fixed, editable tour template. Nothing is published automatically."),
   component: Tour,
 });
 

@@ -2,9 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MessageSquareHeart, Sprout, Settings, PlayCircle } from "lucide-react";
 import { Screen, StatusBanner, ModelLoader } from "@/components/hs";
 import { meta } from "@/lib/meta";
+import rootwaveLogo from "@/assets/rootwave-logo-transparent.png";
 
 export const Route = createFileRoute("/")({
-  head: () => meta("HarvestSignal — what your visitors really want", "Offline-first visitor feedback for small farm tourism. On-device AI, no accounts, no cloud."),
+  head: () => meta("Rootwave — Listen Local. Grow Global.", "Offline-first visitor feedback for small farm tourism. On-device AI, no accounts, no cloud."),
   component: Welcome,
 });
 
@@ -12,12 +13,12 @@ function Welcome() {
   return (
     <Screen>
       <StatusBanner offlineText="Offline — core AI is working on this device" onlineText="AI runs on this device — no internet needed" />
-      <div className="pt-6 text-center">
-        <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-          <Sprout className="h-11 w-11" />
-        </div>
-        <h1 className="text-5xl font-semibold">HarvestSignal</h1>
-        <p className="mt-2 text-lg text-muted-foreground">Listen to visitors. Decide yourself.</p>
+      <div className="pt-3 text-center">
+        <img
+          src={rootwaveLogo}
+          alt="Rootwave — Listen Local. Grow Global."
+          className="mx-auto w-full max-w-80"
+        />
       </div>
       <ModelLoader />
       <Link to="/visitor" className="flex min-h-28 items-center gap-4 rounded-3xl bg-accent px-6 text-accent-foreground shadow-md">

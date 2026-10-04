@@ -12,7 +12,7 @@ import { useAI } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/visitor")({
-  head: () => meta("Leave feedback — HarvestSignal", "Tell Noor what you loved or wanted to see, in English, French or German."),
+  head: () => meta("Leave feedback — Rootwave", "Tell Noor what you loved or wanted to see, in English, French or German."),
   component: Visitor,
 });
 

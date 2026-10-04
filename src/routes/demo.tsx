@@ -11,7 +11,7 @@ import { CATEGORY_NAME } from "@/lib/i18n";
 import { useAI } from "@/lib/hooks";
 
 export const Route = createFileRoute("/demo")({
-  head: () => meta("Demo mode — HarvestSignal", "Reset data and run the airplane-mode judging scenario in one tap."),
+  head: () => meta("Demo mode — Rootwave", "Reset data and run the airplane-mode judging scenario in one tap."),
   component: Demo,
 });
 
@@ -23,9 +23,9 @@ function Demo() {
   const run = async (msgs: { lang: VisitorLang; text: string }[]) => {
     setBusy(true);
     for (const m of msgs) {
-      const { result } = await submitFeedback(m.text, m.lang, crypto.randomUUID(), "text");
-      const lbl = result.label === "not_sure" ? "Not sure" : CATEGORY_NAME.en[result.label];
-      setLog((l) => [...l, `${m.lang.toUpperCase()} → ${lbl} (${result.best.toFixed(3)} vs ${result.second.toFixed(3)})`]);
+      const { recs } = await submitFeedback(m.text, m.lang, crypto.randomUUID(), "text");
+      const lbls = recs.map((r) => (r.label === "not_sure" ? "Not sure" : CATEGORY_NAME.en[r.label])).join(" + ");
+      setLog((l) => [...l, `${m.lang.toUpperCase()} → ${lbls}`]);
     }
     setBusy(false);
   };
